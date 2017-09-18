@@ -1,7 +1,7 @@
 /*
  * MediaBlocks
  *
- * Copyright (C) 2011 - 2015 Bruno Pierucki
+ * Copyright (C) 2017 - 2019 Bruno Pierucki
  *
  * Author: Bruno Pierucki <bp@nebenwelten.net>
  *
@@ -42,9 +42,7 @@ namespace MediaBlocks
 		Q_OBJECT
 		//// begin MBConfigTest public member methods
 	public:
-		/// Constructor
 		MBConfigTest();
-		/// Destructor
 		virtual ~MBConfigTest();
 		//// end MBConfigTest public member methods
 
@@ -65,7 +63,8 @@ namespace MediaBlocks
 		//// end MBConfigTest private member methods
 
 	private slots:
-		void test_case1();
+		void factoryReset();
+		void checkEmptyRoomList();
 
 		//// begin MBConfigTest public member
 	public:
@@ -85,7 +84,7 @@ namespace MediaBlocks
 /*
  * MediaBlocks
  *
- * Copyright (C) 2011 - 2015 Bruno Pierucki
+ * Copyright (C) 2017 - 2019 Bruno Pierucki
  *
  * Author: Bruno Pierucki <bp@nebenwelten.net>
  */
@@ -112,7 +111,7 @@ namespace MediaBlocks
 //// end MBConfigTest static functions
 
 //// begin MBConfigTest public member methods
-/**************************************************************************************************/
+/**********************************************************************************************************************/
 /**
  *
  */
@@ -120,8 +119,7 @@ MediaBlocks::MBConfigTest::MBConfigTest()
 	:QObject()
 {
 }
-
-/**************************************************************************************************/
+/**********************************************************************************************************************/
 /**
  *
  */
@@ -149,11 +147,22 @@ MediaBlocks::MBConfigTest::~MBConfigTest()
 //// end MBConfigTest protected slots
 
 //// begin MBConfigTest private slots
-void MediaBlocks::MBConfigTest::test_case1() {
+/**********************************************************************************************************************/
+void MediaBlocks::MBConfigTest::factoryReset() {
 	MediaBlocks::Configuration config(this);
-	QString testString = config.getTestString();
+	QJsonDocument doc = config.setFactoryReset();
 
-	QVERIFY(testString == "Das ist ein Test");
+	qDebug() << doc.toJson(QJsonDocument::Compact);
+	QVERIFY(QString(doc.toJson(QJsonDocument::Compact)) == "{\"devicename\":\"MediaBlocks\",\"music_db\":\"/mnt/sdcard/data/db/music.sqlite3\",\"rooms\":[],\"use_as_server\":false}");
+}
+/**********************************************************************************************************************/
+void MediaBlocks::MBConfigTest::checkEmptyRoomList() {
+	MediaBlocks::Configuration config(this);
+	QJsonObject obj = config.getRooms();
+	QJsonDocument doc(obj);
+
+	qDebug() << doc.toJson(QJsonDocument::Compact);
+	QVERIFY(QString(doc.toJson(QJsonDocument::Compact)) == "{\"rooms\":[]}");
 }
 //// end MBConfigTest private slots
 

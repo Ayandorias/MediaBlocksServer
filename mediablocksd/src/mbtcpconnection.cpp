@@ -38,7 +38,7 @@ bool MBTcpConnection::connect() {
 }*/
 
 bool MBTcpConnection::loadConfiguration() {
-
+	return true;
 }
 
 void MBTcpConnection::createErrorResponse(QJsonObject &response, int32_t id, QJsonValue result, QJsonValue error) {

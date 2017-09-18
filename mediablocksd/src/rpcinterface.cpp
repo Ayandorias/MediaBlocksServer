@@ -1,7 +1,7 @@
 /*
  * MediaBlocks
  *
- * Copyright (C) 2011 - 2015 Bruno Pierucki
+ * Copyright (C) 2017 - 2019 Bruno Pierucki
  *
  * Author: Bruno Pierucki <bp@nebenwelten.net>
  */

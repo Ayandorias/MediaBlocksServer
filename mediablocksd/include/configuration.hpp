@@ -4,7 +4,7 @@
 /*
  * MediaBlocks
  *
- * Copyright (C) 2011 - 2015 Bruno Pierucki
+ * Copyright (C) 2017 - 2019 Bruno Pierucki
  *
  * Author: Bruno Pierucki <bp@nebenwelten.net>
  *
@@ -47,12 +47,11 @@ class Configuration : public QObject
 {
 	//// begin Configuration public member methods
 public:
-	/// Constructor
 	Configuration(QObject *parent);
-	/// Destructor
 	virtual ~Configuration();
-
-	QString getTestString();
+	QJsonDocument getConfiguration();
+	QJsonObject getRooms();
+	QJsonDocument setFactoryReset();
 	//// end Configuration public member methods
 
 	//// begin Configuration public member methods (internal use only)
@@ -69,8 +68,8 @@ protected:
 
 	//// begin Configuration private member methods
 private:
-	/// Loads the system configuration
-	bool loadConfiguration();
+	bool load();
+	bool save();
 	//// end Configuration private member methods
 
 	//// begin Configuration public member
