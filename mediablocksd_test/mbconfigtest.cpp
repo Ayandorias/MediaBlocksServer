@@ -30,7 +30,7 @@
 
 namespace MediaBlocks
 {
-	/**
+/**
  * \class MBConfigTest
  * \ingroup group_test_configuration
  *
