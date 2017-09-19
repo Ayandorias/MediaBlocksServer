@@ -49,9 +49,12 @@ class Configuration : public QObject
 public:
 	Configuration(QObject *parent);
 	virtual ~Configuration();
+	QJsonObject createRoom(QString &room);
 	QJsonDocument getConfiguration();
+	QJsonObject getRoomById(int32_t id);
 	QJsonObject getRooms();
 	QJsonDocument setFactoryReset();
+	QJsonObject updateRoom(QJsonObject room);
 	//// end Configuration public member methods
 
 	//// begin Configuration public member methods (internal use only)

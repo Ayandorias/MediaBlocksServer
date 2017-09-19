@@ -11,12 +11,9 @@ INCLUDEPATH += ../mediablocksd/include
 
 SOURCES +=  \
             ../mediablocksd/src/configuration.cpp \
-            ../mediablocksd/src/mbtcpconnection.cpp \
     mbconfigtest.cpp
 
-HEADERS +=  ../mediablocksd/include/mbtcpconnection.h \
-            ../mediablocksd/include/configuration.hpp \
-            ../mediablocksd/include/mediablocks.hpp \
-            ../mediablocksd/include/simpleclasses.h
+HEADERS +=  ../mediablocksd/include/configuration.hpp \
+            ../mediablocksd/include/mediablocks.hpp
 
 
