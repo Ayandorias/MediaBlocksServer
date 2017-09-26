@@ -49,10 +49,12 @@ class Configuration : public QObject
 public:
 	Configuration(QObject *parent);
 	virtual ~Configuration();
-	QJsonObject createRoom(QString &room);
+	QJsonObject createRoom(QJsonObject &obj);
+	QJsonObject deleteRoomById(QJsonObject obj);
 	QJsonDocument getConfiguration();
-	QJsonObject getRoomById(int32_t id);
+	QJsonObject getRoomById(QJsonObject obj);
 	QJsonObject getRooms();
+	QJsonObject setDeviceName(QJsonObject &obj);
 	QJsonDocument setFactoryReset();
 	QJsonObject updateRoom(QJsonObject room);
 	//// end Configuration public member methods
@@ -71,6 +73,8 @@ protected:
 
 	//// begin Configuration private member methods
 private:
+	bool clearMessage(QJsonObject &message);
+	void createStatusMessage(QJsonObject &message, StatusCodes code);
 	bool load();
 	bool save();
 	//// end Configuration private member methods
