@@ -49,20 +49,17 @@ MediaBlocks::Configuration::~Configuration()
 }
 /**********************************************************************************************************************/
 /**
- * @brief Creates a new room
+ * \brief Creates a new room
  *
  * Creates a new room on the device, if the server is active.
  *
- * @param room The room to create
+ * \param obj The JSON object with the room information
  *
- * @return The new room object with all information.
+ * \return The new room object with all information.
  */
 QJsonObject MediaBlocks::Configuration::createRoom(QJsonObject &obj) {
 	QJsonObject device = _deviceSettings.object();
-	int32_t port = 6000;
-	int32_t id = -1;
 	QString name;
-	bool avail = false;
 	QJsonObject result;
 	QJsonValue value = obj["roomname"];
 
@@ -72,6 +69,9 @@ QJsonObject MediaBlocks::Configuration::createRoom(QJsonObject &obj) {
 		if(value.isArray()) {
 			QJsonArray array = value.toArray();
 			QJsonArray::iterator it;
+			int32_t id = -1;
+			int32_t port = 6000;
+			bool avail = false;
 			for(it = array.begin(); it != array.end(); ++it) {
 				QJsonValue ref = *it;
 				if(ref.isObject()) {
@@ -125,13 +125,13 @@ QJsonObject MediaBlocks::Configuration::createRoom(QJsonObject &obj) {
 /**********************************************************************************************************************/
 QJsonObject MediaBlocks::Configuration::deleteRoomById(QJsonObject obj) {
 	QJsonObject result;
-	bool avail = false;
 	QJsonObject device = _deviceSettings.object();
 	QJsonValue value = device[MediaBlocks::ROOMLIST];
 	QJsonValue id = obj["id"];
 	if(value.isArray() && id.isDouble()) {
 		QJsonArray array = value.toArray();
 		QJsonArray::iterator it;
+		bool avail = false;
 		for(it = array.begin(); it != array.end(); ++it) {
 			QJsonValue ref = *it;
 			if(ref.isObject()) {
@@ -148,6 +148,7 @@ QJsonObject MediaBlocks::Configuration::deleteRoomById(QJsonObject obj) {
 						save();
 						createStatusMessage(result, Ok);
 						avail = true;
+						break;
 					}
 				}
 			}
@@ -181,7 +182,6 @@ QJsonDocument MediaBlocks::Configuration::getConfiguration() {
  * @return The room with the given id, otherwise an empty object.
  */
 QJsonObject MediaBlocks::Configuration::getRoomById(QJsonObject obj) {
-	bool avail = false;
 	QJsonObject room;
 	QJsonValue id = obj["id"];
 	QJsonObject device = _deviceSettings.object();
@@ -191,6 +191,7 @@ QJsonObject MediaBlocks::Configuration::getRoomById(QJsonObject obj) {
 		int32_t room_id = id.toInt();
 		QJsonArray array = value.toArray();
 		QJsonArray::iterator it;
+		bool avail = false;
 		for(it = array.begin(); it != array.end(); ++it) {
 			QJsonValue ref = *it;
 			if(ref.isObject()) {
@@ -270,6 +271,24 @@ QJsonDocument MediaBlocks::Configuration::setFactoryReset() {
 	return _deviceSettings;
 }
 /**********************************************************************************************************************/
+QJsonObject MediaBlocks::Configuration::setMusicDb(QJsonObject obj) {
+	QJsonObject device;
+	QJsonValue value = obj["music_db"];
+	if(value.isString()) {
+		QString name = value.toString();
+		device = _deviceSettings.object();
+		device.remove("music_db");
+		device.insert("music_db", QJsonValue(name));
+
+		_deviceSettings.setObject(device);
+		save();
+	} else {
+		createStatusMessage(device, NotAvailable);
+	}
+
+	return device;
+}
+/**********************************************************************************************************************/
 /**
  * @brief Updates an existing room
  *
@@ -281,7 +300,6 @@ QJsonDocument MediaBlocks::Configuration::setFactoryReset() {
 QJsonObject MediaBlocks::Configuration::updateRoom(QJsonObject room) {
 	QJsonObject newroom;
 	QJsonValue param = room;
-	bool avail = false;
 
 	if(param.isObject()) {
 		QJsonObject obj = param.toObject();
@@ -293,6 +311,8 @@ QJsonObject MediaBlocks::Configuration::updateRoom(QJsonObject room) {
 			if(value.isArray()) {
 				QJsonArray array = value.toArray();
 				QJsonArray::iterator it;
+				bool avail = false;
+
 				for(it = array.begin(); it != array.end(); ++it) {
 					QJsonValue ref = *it;
 					if(ref.isObject()) {
@@ -319,6 +339,7 @@ QJsonObject MediaBlocks::Configuration::updateRoom(QJsonObject room) {
 									_deviceSettings.setObject(device);
 									save();
 									avail = true;
+									break;
 								}
 							}
 						}
@@ -334,6 +355,24 @@ QJsonObject MediaBlocks::Configuration::updateRoom(QJsonObject room) {
 		}
 	}
 	return newroom;
+}
+/**********************************************************************************************************************/
+QJsonObject MediaBlocks::Configuration::useAsServer(QJsonObject obj) {
+	QJsonObject device;
+	QJsonValue value = obj["use_as_server"];
+	if(value.isBool()) {
+		bool server = value.toBool();
+		device = _deviceSettings.object();
+		device.remove("use_as_server");
+		device.insert("use_as_server", QJsonValue(server));
+
+		_deviceSettings.setObject(device);
+		save();
+	} else {
+		createStatusMessage(device, NotAvailable);
+	}
+
+	return device;
 }
 //// end Configuration public member methods
 
@@ -358,7 +397,7 @@ QJsonObject MediaBlocks::Configuration::updateRoom(QJsonObject room) {
 bool MediaBlocks::Configuration::clearMessage(QJsonObject &message) {
 	if(!message.isEmpty()) {
 		QJsonObject::iterator it;
-		for(it = message.begin(); it != message.end(); ++it) {
+		for(it = message.end(); it != message.begin(); --it) {
 			message.erase(it);
 		}
 	}
@@ -432,6 +471,7 @@ bool MediaBlocks::Configuration::save() {
 		json.write(_deviceSettings.toJson());
 		json.close();
 		result = true;
+		emit changed();
 	}
 
 	return result;
@@ -446,3 +486,12 @@ bool MediaBlocks::Configuration::save() {
 
 //// begin Configuration private slots
 //// end Configuration private slots
+
+//// begin signal documentation
+/**
+ * @fn void changed()
+ * @brief Signal when configuration is changed
+ *
+ * Thsi signal is emitted, when the configuration of the device was changed successfully.
+ */
+//// end signal documentation

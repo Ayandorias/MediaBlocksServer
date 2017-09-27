@@ -22,10 +22,12 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES +=  src/main.cpp \
     src/mbtcpconnection.cpp \
     src/rpcinterface.cpp \
-    src/configuration.cpp
+    src/configuration.cpp \
+    src/interface.cpp
 
 HEADERS +=  include/mediablocks.hpp \
     include/mbtcpconnection.h \
     include/simpleclasses.h \
     include/rpcinterface.hpp \
-    include/configuration.hpp
+    include/configuration.hpp \
+    include/interface.hpp

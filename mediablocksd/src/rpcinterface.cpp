@@ -34,7 +34,7 @@
  *
  */
 MediaBlocks::RPCInterface::RPCInterface(QObject *parent)
-	:QObject(parent)
+	:Interface(parent)
 {
 }
 

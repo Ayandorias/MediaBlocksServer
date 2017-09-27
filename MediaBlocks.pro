@@ -2,5 +2,5 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     mediablocksd \
-    mediablocksd_test \
-    RPCInterfaceTest
+    RPCInterfaceTest \
+    mediablocksd_test

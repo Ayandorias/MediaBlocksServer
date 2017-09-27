@@ -2,8 +2,7 @@
 
 #include <QFile>
 
-MBTcpConnection::MBTcpConnection(QObject *parent) : QObject(parent)
-{
+MBTcpConnection::MBTcpConnection(QObject *parent) : QObject(parent) {
 	QJsonParseError error;
 	QFile json(MediaBlocks::MEDIA_BLOCKS);
 	if(json.open(QIODevice::ReadWrite)) {
@@ -13,15 +12,15 @@ MBTcpConnection::MBTcpConnection(QObject *parent) : QObject(parent)
 }
 
 bool MBTcpConnection::connect() {
-    bool result = false;
-    _server = new QTcpServer(nullptr);
+	bool result = false;
+	_server = new QTcpServer(nullptr);
 
-    if(_server != nullptr) {
+	if(_server != nullptr) {
 		QObject::connect(_server, SIGNAL(newConnection()), this, SLOT(newConnection()));
-        result = _server->listen(QHostAddress::Any, 10007);
-    }
+		result = _server->listen(QHostAddress::Any, 10007);
+	}
 
-    return result;
+	return result;
 }
 
 /*MediaBlocks::CmdValues MBTcpConnection::cmdFromJsonObject(QJsonObject &obj) {
@@ -34,7 +33,7 @@ bool MBTcpConnection::connect() {
 			break;
 		}
 	}
-    return val;
+	return val;
 }*/
 
 bool MBTcpConnection::loadConfiguration() {
@@ -479,23 +478,23 @@ void MBTcpConnection::writeResponse(QJsonObject &response, int32_t id) {
 }
 
 void MBTcpConnection::newConnection() {
-    _server_socket = _server->nextPendingConnection();
+	_server_socket = _server->nextPendingConnection();
 	QObject::connect(_server_socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
 }
 
 void MBTcpConnection::readyRead() {
 	int32_t id = -1;
 	QJsonObject response;
-    QByteArray ba;
-    QJsonParseError error;
-    while(_server_socket->canReadLine()) {
-        ba += _server_socket->readLine();
-    }
+	QByteArray ba;
+	QJsonParseError error;
+	while(_server_socket->canReadLine()) {
+		ba += _server_socket->readLine();
+	}
 
 	QJsonDocument json = QJsonDocument::fromJson(ba, &error);
 	if(error.error == 0) {
-        if(json.isObject()) {
-            QJsonObject obj = json.object();
+		if(json.isObject()) {
+			QJsonObject obj = json.object();
 			QJsonValue jsonrpc = obj["jsonrpc"];
 			if(!jsonrpc.isNull() && jsonrpc.toString() == "2.0") {
 				QJsonValue rpc_method = obj["method"].toString();
@@ -537,10 +536,10 @@ void MBTcpConnection::readyRead() {
 			} else {
 				qDebug() << "Kein JSON RPC Object\n";
 			}
-        }
-    } else {
-        _server_socket->write(QByteArray("Can't validate command!"));
-    }
-    _server_socket->disconnectFromHost();
-    _server_socket->waitForDisconnected();
+		}
+	} else {
+		_server_socket->write(QByteArray("Can't validate command!"));
+	}
+	_server_socket->disconnectFromHost();
+	_server_socket->waitForDisconnected();
 }

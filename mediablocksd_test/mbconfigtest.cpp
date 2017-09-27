@@ -67,7 +67,13 @@ namespace MediaBlocks
 		void factoryReset();
 
 		void setDeviceName();
-		void setDeviceNameBadRequest();
+		void setDeviceNameNotAvailable();
+
+		void setMusicDb();
+		void setMusicDbNotAvailable();
+
+		void useAsServer();
+		void useAsServerNotAvailable();
 
 		void checkEmptyRoomList();
 
@@ -201,12 +207,68 @@ void MediaBlocks::MBConfigTest::setDeviceName() {
 	QVERIFY(QString(compact) == "{\"devicename\":\"MB-For-Living\",\"music_db\":\"/mnt/sdcard/data/db/music.sqlite3\",\"rooms\":[],\"use_as_server\":false}");
 }
 /**********************************************************************************************************************/
-void MediaBlocks::MBConfigTest::setDeviceNameBadRequest() {
+void MediaBlocks::MBConfigTest::setDeviceNameNotAvailable() {
 	QJsonDocument doc;
 	QJsonObject device;
 	MediaBlocks::Configuration config(this);
 
 	device.insert("device_name", QJsonValue("MB-For-Living"));
+	QJsonObject obj = config.setDeviceName(device);
+	doc.setObject(obj);
+	QString compact = doc.toJson(QJsonDocument::Compact);
+
+	qDebug() << compact;
+	QVERIFY(QString(compact) == "{\"code\":4,\"message\":\"Request is not available!\"}");
+}
+/**********************************************************************************************************************/
+void MediaBlocks::MBConfigTest::setMusicDb(){
+	QJsonDocument doc;
+	QJsonObject device;
+	MediaBlocks::Configuration config(this);
+
+	device.insert("music_db", QJsonValue("/home/heresy/Musik/music.sqlite3"));
+	QJsonObject obj = config.setMusicDb(device);
+	doc.setObject(obj);
+	QString compact = doc.toJson(QJsonDocument::Compact);
+
+	qDebug() << compact;
+	QVERIFY(QString(compact) == "{\"devicename\":\"MB-For-Living\",\"music_db\":\"/home/heresy/Musik/music.sqlite3\",\"rooms\":[],\"use_as_server\":false}");
+}
+/**********************************************************************************************************************/
+void MediaBlocks::MBConfigTest::setMusicDbNotAvailable(){
+	QJsonDocument doc;
+	QJsonObject device;
+	MediaBlocks::Configuration config(this);
+
+	device.insert("musicdb", QJsonValue("/home/user/Music/music.sqlite3"));
+	QJsonObject obj = config.setDeviceName(device);
+	doc.setObject(obj);
+	QString compact = doc.toJson(QJsonDocument::Compact);
+
+	qDebug() << compact;
+	QVERIFY(QString(compact) == "{\"code\":4,\"message\":\"Request is not available!\"}");
+}
+/**********************************************************************************************************************/
+void MediaBlocks::MBConfigTest::useAsServer(){
+	QJsonDocument doc;
+	QJsonObject device;
+	MediaBlocks::Configuration config(this);
+
+	device.insert("use_as_server", QJsonValue(true));
+	QJsonObject obj = config.useAsServer(device);
+	doc.setObject(obj);
+	QString compact = doc.toJson(QJsonDocument::Compact);
+
+	qDebug() << compact;
+	QVERIFY(QString(compact) == "{\"devicename\":\"MB-For-Living\",\"music_db\":\"/home/heresy/Musik/music.sqlite3\",\"rooms\":[],\"use_as_server\":true}");
+}
+/**********************************************************************************************************************/
+void MediaBlocks::MBConfigTest::useAsServerNotAvailable(){
+	QJsonDocument doc;
+	QJsonObject device;
+	MediaBlocks::Configuration config(this);
+
+	device.insert("useasserver", QJsonValue(true));
 	QJsonObject obj = config.setDeviceName(device);
 	doc.setObject(obj);
 	QString compact = doc.toJson(QJsonDocument::Compact);
