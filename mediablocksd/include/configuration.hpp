@@ -45,13 +45,21 @@ namespace MediaBlocks
  */
 class Configuration : public QObject
 {
+	Q_OBJECT
 	//// begin Configuration public member methods
 public:
-	Configuration(QObject *parent);
+	explicit Configuration(QObject *parent = nullptr);
 	virtual ~Configuration();
+	QJsonObject createRoom(QJsonObject &obj);
+	QJsonObject deleteRoomById(QJsonObject obj);
 	QJsonDocument getConfiguration();
+	QJsonObject getRoomById(QJsonObject obj);
 	QJsonObject getRooms();
+	QJsonObject setDeviceName(QJsonObject &obj);
 	QJsonDocument setFactoryReset();
+	QJsonObject setMusicDb(QJsonObject obj);
+	QJsonObject updateRoom(QJsonObject room);
+	QJsonObject useAsServer(QJsonObject obj);
 	//// end Configuration public member methods
 
 	//// begin Configuration public member methods (internal use only)
@@ -68,6 +76,8 @@ protected:
 
 	//// begin Configuration private member methods
 private:
+	bool clearMessage(QJsonObject &message);
+	void createStatusMessage(QJsonObject &message, StatusCodes code);
 	bool load();
 	bool save();
 	//// end Configuration private member methods
@@ -84,6 +94,10 @@ protected:
 private:
 	QJsonDocument _deviceSettings;
 	//// end Configuration private member
+signals:
+	//// begin signals
+	void changed();
+	//// end signals
 };
 }    // namespace MediaBlocks
 #endif // HEADER_GUARD_MediaBlocks_MediaBlocks__CONFIGURATION_HPP

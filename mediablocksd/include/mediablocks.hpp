@@ -32,6 +32,15 @@ namespace MediaBlocks {
 	const int32_t ERROR_400 = 400;
 	const int32_t ERROR_404 = 404;
 	const int32_t ERROR_461 = 461;
+
+	enum StatusCodes {
+		Found			= 0x0001,
+		NotFound		= 0x0002,
+		BadRequest		= 0x0003,
+		NotAvailable	= 0x0004,
+
+		Ok				= 0xFFFF
+	};
 }
 
 #endif // MEDIABLOCKS_HPP

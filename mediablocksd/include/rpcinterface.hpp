@@ -14,7 +14,7 @@
 
 //// begin MediaBlocks specific includes
 #include <mediablocks.hpp>
-#include <QObject>
+#include <interface.hpp>
 //// end MediaBlocks specific includes
 
 //// begin using namespaces
@@ -38,12 +38,12 @@ namespace MediaBlocks
  * \brief
  *
  */
-class RPCInterface : public QObject
+class RPCInterface : public Interface
 {
 	//// begin RPCInterface public member methods
 public:
 	/// Constructor
-	RPCInterface(QObject *parent);
+	explicit RPCInterface(QObject *parent);
 	/// Destructor
 	virtual ~RPCInterface();
 	//// end RPCInterface public member methods
